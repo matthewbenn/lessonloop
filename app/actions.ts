@@ -1,7 +1,6 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { generateLessonPlan } from "@/lib/ai/lesson-plan-generator";
 import { CoachRepository } from "@/lib/repositories/coach-repository";
 import { createCoachClient } from "@/lib/supabase/server";
 
@@ -21,20 +20,22 @@ export async function createStudentAction(formData: FormData) {
 export async function createPlanAction(formData: FormData) {
   const repo = await getCoachRepo();
   const studentId = String(formData.get("studentId") ?? "");
-  const coachingNotes = String(formData.get("coachingNotes") ?? "").trim();
-  const student = await repo.getStudent(studentId);
-  const generatedPlan = await generateLessonPlan({
-    studentName: student.name,
-    notes: coachingNotes
-  });
+  const planJsonText = String(formData.get("planJson") ?? "{}");
+  let planJson: Record<string, unknown>;
+
+  try {
+    planJson = JSON.parse(planJsonText);
+  } catch {
+    planJson = { raw: planJsonText };
+  }
 
   const plan = await repo.createPlan({
     studentId,
-    title: generatedPlan.title,
-    focus: generatedPlan.focus,
-    mainCue: generatedPlan.mainCue,
+    title: String(formData.get("title") ?? "Untitled plan"),
+    focus: String(formData.get("focus") ?? ""),
+    mainCue: String(formData.get("mainCue") ?? ""),
     bookingLink: String(formData.get("bookingLink") ?? ""),
-    planJson: generatedPlan.planJson
+    planJson
   });
 
   redirect(`/plans/${plan.id}`);

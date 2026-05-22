@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Calendar, CheckCircle2, Loader2, Send } from "lucide-react";
+import { LessonPlanSections } from "@/components/lesson-plan-sections";
 import type { StudentPlanPayload } from "@/types/domain";
 
 export function StudentPlanView({ token }: { token: string }) {
@@ -87,7 +88,7 @@ export function StudentPlanView({ token }: { token: string }) {
             <h2 className="text-sm font-semibold uppercase text-ink/50">Main cue</h2>
             <p className="mt-1 text-ink">{data.plan.main_cue ?? "Your coach did not add a cue."}</p>
           </div>
-          <pre className="overflow-auto rounded-md bg-linen p-4 text-sm text-ink">{JSON.stringify(data.plan.plan_json, null, 2)}</pre>
+          <LessonPlanSections planJson={data.plan.plan_json} />
           {data.plan.booking_link ? (
             <a className="btn-secondary w-fit" href={data.plan.booking_link}>
               <Calendar className="h-4 w-4" />

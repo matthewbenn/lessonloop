@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
+import { LessonPlanSections } from "@/components/lesson-plan-sections";
 import { CoachRepository } from "@/lib/repositories/coach-repository";
 import { createCoachClient } from "@/lib/supabase/server";
 import { ShareLinkPanel } from "./share-link-panel";
@@ -43,9 +44,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
                 </dd>
               </div>
             </dl>
-            <pre className="mt-6 overflow-auto rounded-lg border border-oat bg-ink p-5 text-xs text-linen">
-              {JSON.stringify(plan.plan_json, null, 2)}
-            </pre>
+            <LessonPlanSections planJson={plan.plan_json} showCoachNotes />
           </section>
 
           <aside className="grid content-start gap-5">
