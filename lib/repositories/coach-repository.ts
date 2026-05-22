@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { toRepositoryError } from "@/lib/repositories/repository-error";
 import type { CompletionReport, Plan, Student } from "@/types/domain";
 
 export class CoachRepository {
@@ -22,7 +23,7 @@ export class CoachRepository {
       .eq("coach_id", coachId)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return (data ?? []) as Student[];
   }
 
@@ -39,7 +40,7 @@ export class CoachRepository {
       .select("*")
       .single();
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return data as Student;
   }
 
@@ -52,7 +53,7 @@ export class CoachRepository {
       .eq("id", id)
       .single();
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return data as Student;
   }
 
@@ -65,7 +66,7 @@ export class CoachRepository {
       .eq("student_id", studentId)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return (data ?? []) as Plan[];
   }
 
@@ -92,7 +93,7 @@ export class CoachRepository {
       .select("*")
       .single();
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return data as Plan;
   }
 
@@ -105,7 +106,7 @@ export class CoachRepository {
       .eq("id", id)
       .single();
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return data as Plan;
   }
 
@@ -118,7 +119,7 @@ export class CoachRepository {
       .eq("plan_id", planId)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return (data ?? []).map(({ plans, ...report }) => {
       void plans;
       return report;

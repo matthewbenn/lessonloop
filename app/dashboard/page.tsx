@@ -2,12 +2,29 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
+import { SetupNeeded } from "@/components/setup-needed";
 import { CoachRepository } from "@/lib/repositories/coach-repository";
+import { isMissingSchemaError } from "@/lib/repositories/repository-error";
 import { createCoachClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
   const repo = new CoachRepository(await createCoachClient());
-  const students = await repo.listStudents();
+  let students = [];
+
+  try {
+    students = await repo.listStudents();
+  } catch (error) {
+    if (!isMissingSchemaError(error)) throw error;
+
+    return (
+      <>
+        <AppHeader />
+        <main className="page-shell">
+          <SetupNeeded detail={error.message} />
+        </main>
+      </>
+    );
+  }
 
   return (
     <>

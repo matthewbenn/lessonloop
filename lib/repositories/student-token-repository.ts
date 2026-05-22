@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { toRepositoryError } from "@/lib/repositories/repository-error";
 import { daysFromNow, hashMagicToken } from "@/lib/tokens";
 import type { CompletionReport, MagicLink, Plan, Student, StudentPlanPayload } from "@/types/domain";
 
@@ -23,7 +24,7 @@ export class StudentTokenRepository {
       .select("*")
       .single();
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return data as MagicLink;
   }
 
@@ -83,7 +84,7 @@ export class StudentTokenRepository {
       .select("*")
       .single();
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return data as CompletionReport;
   }
 
@@ -97,7 +98,7 @@ export class StudentTokenRepository {
       .limit(1)
       .maybeSingle();
 
-    if (error) throw error;
+    if (error) throw toRepositoryError(error);
     return data as CompletionReport | null;
   }
 }
