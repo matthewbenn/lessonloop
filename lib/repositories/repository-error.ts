@@ -18,5 +18,5 @@ export const toRepositoryError = (error: unknown) => {
   return new RepositoryError("Repository operation failed");
 };
 
-export const isMissingSchemaError = (error: unknown) =>
+export const isMissingSchemaError = (error: unknown): error is RepositoryError =>
   error instanceof RepositoryError && (error.code === "42P01" || error.message.includes("Could not find the table"));
