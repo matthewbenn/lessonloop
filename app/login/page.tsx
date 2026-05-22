@@ -1,0 +1,30 @@
+import Link from "next/link";
+import { Apple, Chrome } from "lucide-react";
+
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
+  const { next = "/dashboard", error } = await searchParams;
+  const encodedNext = encodeURIComponent(next);
+
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-linen px-4">
+      <section className="w-full max-w-sm rounded-lg border border-oat bg-white p-6 shadow-sm">
+        <div className="mb-6">
+          <p className="text-sm font-medium text-clay">LessonLoop</p>
+          <h1 className="mt-2 text-2xl font-semibold text-ink">Coach sign in</h1>
+          <p className="mt-2 text-sm text-ink/70">Manage students, plans, and secure student share links.</p>
+        </div>
+        <div className="grid gap-3">
+          <Link className="btn-primary w-full" href={`/auth/sign-in/google?next=${encodedNext}`}>
+            <Chrome className="h-4 w-4" />
+            Sign in with Google
+          </Link>
+          <Link className="btn-secondary w-full" href={`/auth/sign-in/apple?next=${encodedNext}`}>
+            <Apple className="h-4 w-4" />
+            Sign in with Apple
+          </Link>
+          {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+        </div>
+      </section>
+    </main>
+  );
+}
