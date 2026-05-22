@@ -31,9 +31,12 @@ NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+OPENAI_API_KEY=your-openai-api-key
+OPENAI_MODEL=gpt-4.1-mini
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` is only used in server route handlers and must never be exposed to client components.
+`OPENAI_API_KEY` is server-only and used to turn coach notes into structured lesson plans.
 
 ## Expected Tables
 

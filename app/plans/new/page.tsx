@@ -4,16 +4,6 @@ import { createPlanAction } from "@/app/actions";
 import { CoachRepository } from "@/lib/repositories/coach-repository";
 import { createCoachClient } from "@/lib/supabase/server";
 
-const starterPlan = JSON.stringify(
-  {
-    warmup: ["5 minutes easy review"],
-    practice: ["Main drill", "Targeted repetition"],
-    reflection: ["What felt easier today?"]
-  },
-  null,
-  2
-);
-
 export default async function NewPlanPage({ searchParams }: { searchParams: Promise<{ studentId?: string }> }) {
   const { studentId } = await searchParams;
   const repo = new CoachRepository(await createCoachClient());
@@ -40,27 +30,20 @@ export default async function NewPlanPage({ searchParams }: { searchParams: Prom
             </select>
           </label>
           <label className="grid gap-2">
-            <span className="form-label">Title</span>
-            <input className="form-input" name="title" required placeholder="Week 4 bow hold reset" />
-          </label>
-          <label className="grid gap-2">
-            <span className="form-label">Focus</span>
-            <input className="form-input" name="focus" placeholder="Tone consistency and relaxed right hand" />
-          </label>
-          <label className="grid gap-2">
-            <span className="form-label">Main cue</span>
-            <input className="form-input" name="mainCue" placeholder="Heavy elbow, soft thumb" />
+            <span className="form-label">Coach notes</span>
+            <textarea
+              className="form-input min-h-72"
+              name="coachingNotes"
+              required
+              placeholder="Paste or type the raw lesson notes: what happened, what improved, what was hard, what to practice, next steps..."
+            />
           </label>
           <label className="grid gap-2">
             <span className="form-label">Booking link</span>
             <input className="form-input" name="bookingLink" type="url" placeholder="https://cal.com/..." />
           </label>
-          <label className="grid gap-2">
-            <span className="form-label">Plan JSON</span>
-            <textarea className="form-input min-h-56 font-mono text-xs" name="planJson" defaultValue={starterPlan} />
-          </label>
           <button className="btn-primary w-fit" type="submit" disabled={students.length === 0}>
-            Create plan
+            Generate plan
           </button>
         </form>
       </main>
