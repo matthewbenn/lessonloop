@@ -112,7 +112,7 @@ export function PlanPreviewForm({ students, selectedStudentId }: { students: Stu
 
       <button className="btn-primary w-fit" type="button" disabled={students.length === 0 || isGenerating || !coachingNotes.trim()} onClick={generatePreview}>
         {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-        Preview AI plan
+        Preview draft plan
       </button>
 
       {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}

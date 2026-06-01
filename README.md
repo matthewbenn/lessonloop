@@ -31,12 +31,17 @@ NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-OPENAI_API_KEY=your-openai-api-key
+# Optional. Leave blank for the local POC draft generator.
+OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4.1-mini
+DEV_LOGIN_ENABLED=
+DEV_COACH_EMAIL=dev-coach@lessonloop.local
+DEV_COACH_PASSWORD=lessonloop-dev-password
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` is only used in server route handlers and must never be exposed to client components.
-`OPENAI_API_KEY` is server-only and used to turn coach notes into structured lesson plans.
+`OPENAI_API_KEY` is optional and server-only. When it is not set, LessonLoop uses a deterministic local draft generator so coaches can still preview, edit, and save lesson plans without calling an AI API.
+`DEV_LOGIN_ENABLED`, `DEV_COACH_EMAIL`, and `DEV_COACH_PASSWORD` are only for the development SSO bypass. The dev login route is available on `localhost`/`127.0.0.1` in non-production environments, or when `DEV_LOGIN_ENABLED=true`.
 
 ## Expected Tables
 

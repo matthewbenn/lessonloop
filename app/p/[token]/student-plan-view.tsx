@@ -30,6 +30,8 @@ export function StudentPlanView({ token }: { token: string }) {
   }, [token]);
 
   const submitReport = async (completed: boolean) => {
+    if (data?.completion.completed) return;
+
     setIsSubmitting(true);
     setError("");
 
@@ -89,12 +91,6 @@ export function StudentPlanView({ token }: { token: string }) {
             <p className="mt-1 text-ink">{data.plan.main_cue ?? "Your coach did not add a cue."}</p>
           </div>
           <LessonPlanSections planJson={data.plan.plan_json} />
-          {data.plan.booking_link ? (
-            <a className="btn-secondary w-fit" href={data.plan.booking_link}>
-              <Calendar className="h-4 w-4" />
-              Book next session
-            </a>
-          ) : null}
         </div>
 
         <section className="mt-6 rounded-lg border border-oat bg-white p-5">
@@ -102,21 +98,36 @@ export function StudentPlanView({ token }: { token: string }) {
             <CheckCircle2 className={data.completion.completed ? "h-5 w-5 text-moss" : "h-5 w-5 text-ink/30"} />
             <h2 className="text-lg font-semibold text-ink">{data.completion.completed ? "Marked complete" : "Completion report"}</h2>
           </div>
-          <textarea
-            className="form-input mt-4 min-h-28"
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-            placeholder="Add a quick note for your coach"
-          />
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button className="btn-primary" onClick={() => submitReport(true)} disabled={isSubmitting}>
-              <Send className="h-4 w-4" />
-              Submit complete
-            </button>
-            <button className="btn-secondary" onClick={() => submitReport(false)} disabled={isSubmitting}>
-              Save note only
-            </button>
-          </div>
+          {data.completion.completed ? (
+            <div className="mt-4 grid gap-4 rounded-md bg-moss/10 px-4 py-3 text-sm text-ink">
+              <p>Your completion report has been submitted.</p>
+              {data.completion.latestReport?.notes ? <p className="mt-2 text-ink/70">{data.completion.latestReport.notes}</p> : null}
+              {data.plan.booking_link ? (
+                <a className="btn-primary w-full justify-center py-3 text-base sm:w-fit" href={data.plan.booking_link}>
+                  <Calendar className="h-5 w-5" />
+                  Book next session
+                </a>
+              ) : null}
+            </div>
+          ) : (
+            <>
+              <textarea
+                className="form-input mt-4 min-h-28"
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                placeholder="Add a quick note for your coach"
+              />
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button className="btn-primary" onClick={() => submitReport(true)} disabled={isSubmitting}>
+                  <Send className="h-4 w-4" />
+                  Submit complete
+                </button>
+                <button className="btn-secondary" onClick={() => submitReport(false)} disabled={isSubmitting}>
+                  Save note only
+                </button>
+              </div>
+            </>
+          )}
           {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
         </section>
       </section>

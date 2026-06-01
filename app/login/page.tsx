@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Apple, Chrome } from "lucide-react";
+import { Apple, Chrome, FlaskConical } from "lucide-react";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
   const { next = "/dashboard", error } = await searchParams;
   const encodedNext = encodeURIComponent(next);
+  const showDevLogin = process.env.NODE_ENV !== "production" || process.env.DEV_LOGIN_ENABLED === "true";
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-linen px-4">
@@ -22,6 +23,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <Apple className="h-4 w-4" />
             Sign in with Apple
           </Link>
+          {showDevLogin ? (
+            <Link className="btn-secondary w-full border-dashed" href={`/auth/dev-login?next=${encodedNext}`}>
+              <FlaskConical className="h-4 w-4" />
+              Dev login
+            </Link>
+          ) : null}
           {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
         </div>
       </section>

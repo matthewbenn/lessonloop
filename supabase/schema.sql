@@ -48,6 +48,9 @@ create index if not exists plans_student_id_idx on public.plans(student_id);
 create index if not exists magic_links_token_hash_idx on public.magic_links(token_hash);
 create index if not exists magic_links_plan_id_idx on public.magic_links(plan_id);
 create index if not exists completion_reports_plan_id_idx on public.completion_reports(plan_id);
+create unique index if not exists completion_reports_magic_link_id_key
+  on public.completion_reports(magic_link_id)
+  where magic_link_id is not null;
 
 alter table public.students enable row level security;
 alter table public.plans enable row level security;

@@ -12,23 +12,23 @@ export type GeneratedLessonPlan = {
   };
 };
 
-const fallbackList = (notes: string) =>
+const draftList = (notes: string) =>
   notes
     .split(/\n+/)
     .map((line) => line.trim())
     .filter(Boolean)
     .slice(0, 5);
 
-export const fallbackLessonPlan = (notes: string): GeneratedLessonPlan => {
-  const bullets = fallbackList(notes);
+export const localDraftLessonPlan = (notes: string): GeneratedLessonPlan => {
+  const bullets = draftList(notes);
 
   return {
-    title: "Generated lesson plan",
+    title: "Draft lesson plan",
     focus: bullets[0] ?? "Review the coach notes and reinforce the highest-priority skill.",
     mainCue: "Slow, clear repetitions with one target at a time.",
     planJson: {
       coach_notes: notes,
-      summary: "AI generation is not configured, so this plan keeps the coach notes and creates a simple practice structure.",
+      summary: "Local draft generated from the coach notes. Review and edit before saving.",
       warmup: ["Easy review of the previous lesson", "One low-pressure repetition of the target skill"],
       lesson_steps: bullets.length > 0 ? bullets : ["Review notes with the student", "Choose one priority skill", "Practice in short focused rounds"],
       practice_plan: ["Practice 10 minutes per day", "Pause after each round and check the main cue", "Bring one question to the next lesson"],
@@ -78,9 +78,20 @@ const getResponseText = (payload: unknown) => {
   return "";
 };
 
+const getOpenAIErrorMessage = async (response: Response) => {
+  try {
+    const payload = (await response.json()) as { error?: { message?: string; code?: string } };
+    const detail = payload.error?.message ?? "OpenAI could not generate the plan.";
+    const code = payload.error?.code ? ` (${payload.error.code})` : "";
+    return `OpenAI generation failed${code}: ${detail}`;
+  } catch {
+    return `OpenAI generation failed with status ${response.status}.`;
+  }
+};
+
 export async function generateLessonPlan(input: { studentName?: string; notes: string }): Promise<GeneratedLessonPlan> {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return fallbackLessonPlan(input.notes);
+  if (!apiKey) return localDraftLessonPlan(input.notes);
 
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
@@ -110,16 +121,16 @@ export async function generateLessonPlan(input: { studentName?: string; notes: s
   });
 
   if (!response.ok) {
-    return fallbackLessonPlan(input.notes);
+    throw new Error(await getOpenAIErrorMessage(response));
   }
 
   const payload = (await response.json()) as unknown;
   const text = getResponseText(payload);
-  if (!text) return fallbackLessonPlan(input.notes);
+  if (!text) throw new Error("OpenAI generation failed: no lesson plan content was returned.");
 
   try {
     return JSON.parse(text) as GeneratedLessonPlan;
   } catch {
-    return fallbackLessonPlan(input.notes);
+    throw new Error("OpenAI generation failed: the lesson plan response was not valid JSON.");
   }
 }

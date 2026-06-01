@@ -46,7 +46,7 @@ export class StudentTokenRepository {
     const tokenRecord = await this.getValidToken(rawToken);
     if (!tokenRecord) return null;
 
-    const latestReport = await this.getLatestReport(tokenRecord.plan_id, tokenRecord.student_id);
+    const latestReport = await this.getLatestReport(tokenRecord.id);
 
     return {
       plan: {
@@ -72,6 +72,24 @@ export class StudentTokenRepository {
     const tokenRecord = await this.getValidToken(input.rawToken);
     if (!tokenRecord) return null;
 
+    const latestReport = await this.getLatestReport(tokenRecord.id);
+    if (latestReport?.completed) return latestReport;
+
+    if (latestReport) {
+      const { data, error } = await this.supabase
+        .from("completion_reports")
+        .update({
+          completed: input.completed,
+          notes: input.notes || latestReport.notes || null
+        })
+        .eq("id", latestReport.id)
+        .select("*")
+        .single();
+
+      if (error) throw toRepositoryError(error);
+      return data as CompletionReport;
+    }
+
     const { data, error } = await this.supabase
       .from("completion_reports")
       .insert({
@@ -84,16 +102,19 @@ export class StudentTokenRepository {
       .select("*")
       .single();
 
+    if (error?.code === "23505") {
+      return this.getLatestReport(tokenRecord.id);
+    }
+
     if (error) throw toRepositoryError(error);
     return data as CompletionReport;
   }
 
-  private async getLatestReport(planId: string, studentId: string) {
+  private async getLatestReport(magicLinkId: string) {
     const { data, error } = await this.supabase
       .from("completion_reports")
       .select("*")
-      .eq("plan_id", planId)
-      .eq("student_id", studentId)
+      .eq("magic_link_id", magicLinkId)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
