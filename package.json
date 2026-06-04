@@ -2,11 +2,14 @@
   "name": "lessonloop-poc",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "node scripts/next-node22.mjs dev --hostname 0.0.0.0 --port 3002",
+    "build": "node scripts/next-node22.mjs build",
+    "start": "node scripts/next-node22.mjs start",
+    "lint": "node scripts/next-node22.mjs lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

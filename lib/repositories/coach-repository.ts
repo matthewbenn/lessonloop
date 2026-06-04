@@ -1,6 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { toRepositoryError } from "@/lib/repositories/repository-error";
-import type { CompletionReport, Plan, Student } from "@/types/domain";
+import type { CompletionReport, DashboardPlan, Plan, Student } from "@/types/domain";
+
+type DashboardPlanRow = Plan & {
+  students: Pick<Student, "id" | "name">;
+};
 
 export class CoachRepository {
   constructor(private readonly supabase: SupabaseClient) {}
@@ -27,12 +31,31 @@ export class CoachRepository {
     return (data ?? []) as Student[];
   }
 
+  async listDashboardPlans() {
+    const coachId = await this.requireUserId();
+    const { data, error } = await this.supabase
+      .from("plans")
+      .select("*, students!inner(id, name)")
+      .eq("coach_id", coachId)
+      .order("due_at", { ascending: true, nullsFirst: false })
+      .order("created_at", { ascending: false });
+
+    if (error) throw toRepositoryError(error);
+
+    return ((data ?? []) as DashboardPlanRow[]).map(({ students, ...plan }) => ({
+      ...plan,
+      is_overdue: plan.completion_state === "pending" && Boolean(plan.due_at) && new Date(plan.due_at as string).getTime() < Date.now(),
+      student: students
+    })) as DashboardPlan[];
+  }
+
   async createStudent(input: { name: string; email?: string; notes?: string }) {
     const coachId = await this.requireUserId();
     const { data, error } = await this.supabase
       .from("students")
       .insert({
         coach_id: coachId,
+        created_by: coachId,
         name: input.name,
         email: input.email || null,
         notes: input.notes || null
@@ -77,18 +100,23 @@ export class CoachRepository {
     mainCue?: string;
     planJson: Record<string, unknown>;
     bookingLink?: string;
+    dueAt?: string;
   }) {
     const coachId = await this.requireUserId();
+    const dueAt = input.dueAt ? new Date(input.dueAt).toISOString() : null;
     const { data, error } = await this.supabase
       .from("plans")
       .insert({
         coach_id: coachId,
+        created_by: coachId,
         student_id: input.studentId,
         title: input.title,
         focus: input.focus || null,
         main_cue: input.mainCue || null,
         plan_json: input.planJson,
-        booking_link: input.bookingLink || null
+        booking_link: input.bookingLink || null,
+        due_at: dueAt,
+        completion_state: "pending"
       })
       .select("*")
       .single();

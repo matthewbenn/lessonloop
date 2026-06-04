@@ -10,6 +10,7 @@ export function PlanPreviewForm({ students, selectedStudentId }: { students: Stu
   const [studentId, setStudentId] = useState(selectedStudentId ?? students[0]?.id ?? "");
   const [coachingNotes, setCoachingNotes] = useState("");
   const [bookingLink, setBookingLink] = useState("");
+  const [dueAt, setDueAt] = useState("");
   const [preview, setPreview] = useState<GeneratedLessonPlan | null>(null);
   const [title, setTitle] = useState("");
   const [focus, setFocus] = useState("");
@@ -110,6 +111,11 @@ export function PlanPreviewForm({ students, selectedStudentId }: { students: Stu
         <input className="form-input" value={bookingLink} onChange={(event) => setBookingLink(event.target.value)} type="url" placeholder="https://cal.com/..." />
       </label>
 
+      <label className="grid gap-2">
+        <span className="form-label">Due date</span>
+        <input className="form-input" value={dueAt} onChange={(event) => setDueAt(event.target.value)} type="date" />
+      </label>
+
       <button className="btn-primary w-fit" type="button" disabled={students.length === 0 || isGenerating || !coachingNotes.trim()} onClick={generatePreview}>
         {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
         Preview draft plan
@@ -121,6 +127,7 @@ export function PlanPreviewForm({ students, selectedStudentId }: { students: Stu
         <form action={createPlanAction} className="grid gap-5 border-t border-oat pt-5">
           <input type="hidden" name="studentId" value={studentId} />
           <input type="hidden" name="bookingLink" value={bookingLink} />
+          <input type="hidden" name="dueAt" value={dueAt} />
           <input type="hidden" name="planJson" value={planJsonText} />
           <p className="text-sm font-medium text-clay">Preview for {selectedStudent?.name ?? "student"}</p>
           <label className="grid gap-2">

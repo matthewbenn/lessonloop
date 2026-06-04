@@ -29,8 +29,13 @@ Create `.env.local`:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+# Or, when using the Supabase/Vercel integration:
+# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+# Or, when using the Supabase/Vercel integration:
+# SUPABASE_SECRET_KEY=your-supabase-secret-key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+# NEXT_PUBLIC_SITE_URL can be used instead of NEXT_PUBLIC_APP_URL.
 # Optional. Leave blank for the local POC draft generator.
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4.1-mini
@@ -56,28 +61,35 @@ Coach-facing reads and writes use the logged-in Supabase session so RLS can enfo
 
 ## Local Development
 
+Use Node 22 for local development. The project includes `.nvmrc` and `.node-version`, and `npm run dev` will relaunch Next with Homebrew Node 22 when your default shell is on another Node version.
+
 ```bash
+nvm use
 npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3002`.
 
 ## Supabase Auth Setup
 
 In Supabase Auth:
 
 1. Enable Google and Apple providers.
-2. Add `http://localhost:3000/auth/callback` to redirect URLs.
-3. Add the deployed Vercel callback URL after deployment: `https://your-domain.vercel.app/auth/callback`.
+2. Set the Site URL to the production app URL, such as `https://your-domain.com` or `https://your-project.vercel.app`.
+3. Add `http://localhost:3000/auth/callback` to redirect URLs.
+4. Add the deployed production callback URL: `https://your-domain.com/auth/callback` or `https://your-project.vercel.app/auth/callback`.
+5. For Vercel preview deploys, add `https://*-your-team-or-account-slug.vercel.app/**` if you want preview OAuth callbacks to work.
+6. In the Google and Apple provider dashboards, use the Supabase provider callback URL, not the Vercel app callback URL: `https://your-project-ref.supabase.co/auth/v1/callback`.
 
 ## Vercel Deploy Notes
 
 1. Import the repo into Vercel.
-2. Add the environment variables above in Project Settings.
-3. Set `NEXT_PUBLIC_APP_URL` to the production URL.
+2. Add the Supabase integration or add the environment variables above in Project Settings.
+3. Set `NEXT_PUBLIC_APP_URL` or `NEXT_PUBLIC_SITE_URL` to the public production app URL. If neither is set, production falls back to Vercel's `VERCEL_PROJECT_PRODUCTION_URL` when Vercel system environment variables are exposed.
 4. Add the production callback URL in Supabase Auth.
-5. Deploy normally with the Next.js framework preset.
+5. Make sure the production deployment is public in Vercel. If Vercel Deployment Protection is enabled, users may be sent to a Vercel login page before the app can receive the OAuth callback.
+6. Deploy normally with the Next.js framework preset.
 
 ## Security Notes
 

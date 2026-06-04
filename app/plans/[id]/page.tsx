@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { LessonPlanSections } from "@/components/lesson-plan-sections";
+import { DueDateText, isPlanOverdue, PlanStatusBadge } from "@/components/plan-status";
 import { CoachRepository } from "@/lib/repositories/coach-repository";
 import { createCoachClient } from "@/lib/supabase/server";
 import { ShareLinkPanel } from "./share-link-panel";
@@ -21,8 +22,21 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
         <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_360px]">
           <section>
             <p className="text-sm font-medium text-clay">{student.name}</p>
-            <h1 className="mt-1 text-3xl font-semibold text-ink">{plan.title}</h1>
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              <h1 className="text-3xl font-semibold text-ink">{plan.title}</h1>
+              <PlanStatusBadge completionState={plan.completion_state} isOverdue={isPlanOverdue(plan)} />
+            </div>
             <dl className="mt-6 grid gap-4 rounded-lg border border-oat bg-white p-5 sm:grid-cols-2">
+              <div>
+                <dt className="text-xs font-semibold uppercase text-ink/50">Due date</dt>
+                <dd className="mt-1 text-sm text-ink">
+                  <DueDateText dueAt={plan.due_at} />
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase text-ink/50">Completed</dt>
+                <dd className="mt-1 text-sm text-ink">{plan.completed_at ? new Date(plan.completed_at).toLocaleDateString() : "Not yet"}</dd>
+              </div>
               <div>
                 <dt className="text-xs font-semibold uppercase text-ink/50">Focus</dt>
                 <dd className="mt-1 text-sm text-ink">{plan.focus ?? "Not set"}</dd>

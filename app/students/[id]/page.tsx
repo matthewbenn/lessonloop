@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
+import { DueDateText, isPlanOverdue, PlanStatusBadge } from "@/components/plan-status";
 import { CoachRepository } from "@/lib/repositories/coach-repository";
 import { createCoachClient } from "@/lib/supabase/server";
 
@@ -42,8 +43,14 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
             <div className="grid gap-3">
               {plans.map((plan) => (
                 <Link key={plan.id} href={`/plans/${plan.id}`} className="rounded-lg border border-oat bg-white p-4 hover:border-moss">
-                  <h3 className="font-semibold text-ink">{plan.title}</h3>
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="font-semibold text-ink">{plan.title}</h3>
+                    <PlanStatusBadge completionState={plan.completion_state} isOverdue={isPlanOverdue(plan)} />
+                  </div>
                   <p className="mt-1 text-sm text-ink/70">{plan.focus ?? "No focus recorded"}</p>
+                  <p className="mt-2 text-sm text-ink/60">
+                    <DueDateText dueAt={plan.due_at} />
+                  </p>
                 </Link>
               ))}
             </div>

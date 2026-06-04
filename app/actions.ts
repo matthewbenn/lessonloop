@@ -35,6 +35,7 @@ export async function createPlanAction(formData: FormData) {
     focus: String(formData.get("focus") ?? ""),
     mainCue: String(formData.get("mainCue") ?? ""),
     bookingLink: String(formData.get("bookingLink") ?? ""),
+    dueAt: String(formData.get("dueAt") ?? ""),
     planJson
   });
 

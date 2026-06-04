@@ -7,7 +7,7 @@ const isAlreadyRegisteredError = (error: { message?: string; code?: string; stat
   error.status === 422 || error.code === "email_exists" || error.message?.toLowerCase().includes("already");
 
 const devLoginAllowed = (url: URL) =>
-  process.env.DEV_LOGIN_ENABLED === "true" || (process.env.NODE_ENV !== "production" && ["localhost", "127.0.0.1"].includes(url.hostname));
+  process.env.DEV_LOGIN_ENABLED === "true" || ["localhost", "127.0.0.1", "0.0.0.0", "::1"].includes(url.hostname);
 
 const requestOrigin = (request: Request, fallback: URL) => {
   const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? fallback.host;

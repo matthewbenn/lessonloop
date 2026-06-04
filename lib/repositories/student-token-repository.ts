@@ -16,6 +16,7 @@ export class StudentTokenRepository {
       .from("magic_links")
       .insert({
         coach_id: input.coachId,
+        created_by: input.coachId,
         student_id: input.studentId,
         plan_id: input.planId,
         token_hash: hashMagicToken(input.rawToken),
