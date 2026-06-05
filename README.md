@@ -78,7 +78,7 @@ In Supabase Auth:
 1. Enable Google and Apple providers.
 2. Set the Site URL to the production app URL, such as `https://your-domain.com` or `https://your-project.vercel.app`.
 3. Add `http://localhost:3002/auth/callback` to redirect URLs for local development.
-4. Add the deployed production callback URL: `https://your-domain.com/auth/callback` or `https://your-project.vercel.app/auth/callback`.
+4. Add the deployed production callback URL: `https://lessonloop-three.vercel.app/auth/callback`.
 5. For Vercel preview deploys, add `https://*-your-team-or-account-slug.vercel.app/**` if you want preview OAuth callbacks to work.
 6. In the Google and Apple provider dashboards, use the Supabase provider callback URL, not the Vercel app callback URL: `https://your-project-ref.supabase.co/auth/v1/callback`.
 
@@ -86,7 +86,7 @@ In Supabase Auth:
 
 1. Import the repo into Vercel.
 2. Add the Supabase integration or add the environment variables above in Project Settings.
-3. Set `NEXT_PUBLIC_APP_URL` or `NEXT_PUBLIC_SITE_URL` to the public production app URL. If neither is set, production falls back to Vercel's `VERCEL_PROJECT_PRODUCTION_URL` when Vercel system environment variables are exposed.
+3. Set `NEXT_PUBLIC_APP_URL` or `NEXT_PUBLIC_SITE_URL` to `https://lessonloop-three.vercel.app`. If neither is set, production falls back to Vercel's `VERCEL_PROJECT_PRODUCTION_URL` when Vercel system environment variables are exposed.
 4. Add the production callback URL in Supabase Auth.
 5. Make sure the production deployment is public in Vercel. If Vercel Deployment Protection is enabled, users may be sent to a Vercel login page before the app can receive the OAuth callback.
 6. Deploy normally with the Next.js framework preset.
