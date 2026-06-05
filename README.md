@@ -77,7 +77,7 @@ In Supabase Auth:
 
 1. Enable Google and Apple providers.
 2. Set the Site URL to the production app URL, such as `https://your-domain.com` or `https://your-project.vercel.app`.
-3. Add `http://localhost:3000/auth/callback` to redirect URLs.
+3. Add `http://localhost:3002/auth/callback` to redirect URLs for local development.
 4. Add the deployed production callback URL: `https://your-domain.com/auth/callback` or `https://your-project.vercel.app/auth/callback`.
 5. For Vercel preview deploys, add `https://*-your-team-or-account-slug.vercel.app/**` if you want preview OAuth callbacks to work.
 6. In the Google and Apple provider dashboards, use the Supabase provider callback URL, not the Vercel app callback URL: `https://your-project-ref.supabase.co/auth/v1/callback`.

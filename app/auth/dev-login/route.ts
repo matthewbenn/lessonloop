@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requestOrigin } from "@/lib/request-origin";
 import { createAdminClient, createCoachClient } from "@/lib/supabase/server";
 
 const isSafePath = (value: string) => value.startsWith("/") && !value.startsWith("//");
@@ -8,12 +9,6 @@ const isAlreadyRegisteredError = (error: { message?: string; code?: string; stat
 
 const devLoginAllowed = (url: URL) =>
   process.env.DEV_LOGIN_ENABLED === "true" || ["localhost", "127.0.0.1", "0.0.0.0", "::1"].includes(url.hostname);
-
-const requestOrigin = (request: Request, fallback: URL) => {
-  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? fallback.host;
-  const protocol = request.headers.get("x-forwarded-proto") ?? fallback.protocol.replace(":", "");
-  return `${protocol}://${host}`;
-};
 
 const ensureDevUser = async (email: string, password: string) => {
   const admin = createAdminClient();
