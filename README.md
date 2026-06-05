@@ -34,7 +34,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 # Or, when using the Supabase/Vercel integration:
 # SUPABASE_SECRET_KEY=your-supabase-secret-key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3002
 # NEXT_PUBLIC_SITE_URL can be used instead of NEXT_PUBLIC_APP_URL.
 # Optional. Leave blank for the local POC draft generator.
 OPENAI_API_KEY=

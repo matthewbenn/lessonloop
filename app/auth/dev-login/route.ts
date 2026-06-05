@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { requestOrigin } from "@/lib/request-origin";
 import { createAdminClient, createCoachClient } from "@/lib/supabase/server";
 
 const isSafePath = (value: string) => value.startsWith("/") && !value.startsWith("//");
@@ -44,7 +43,7 @@ const ensureDevUser = async (email: string, password: string) => {
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const origin = requestOrigin(request, requestUrl);
+  const origin = requestUrl.origin;
   const nextParam = requestUrl.searchParams.get("next") ?? "/dashboard";
   const next = isSafePath(nextParam) ? nextParam : "/dashboard";
 

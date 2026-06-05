@@ -3,17 +3,8 @@ import { createServerClient } from "@supabase/ssr";
 import { env } from "@/lib/env";
 
 const protectedPrefixes = ["/dashboard", "/students", "/plans"];
-const productionHost = "lessonloop-three.vercel.app";
-const legacyProductionHosts = new Set(["lessonloop-matthew-benn-s-projects.vercel.app"]);
 
 export async function middleware(request: NextRequest) {
-  if (legacyProductionHosts.has(request.nextUrl.hostname)) {
-    const canonicalUrl = request.nextUrl.clone();
-    canonicalUrl.hostname = productionHost;
-    canonicalUrl.protocol = "https:";
-    return NextResponse.redirect(canonicalUrl, 308);
-  }
-
   let response = NextResponse.next({ request });
   type CookieToSet = {
     name: string;
