@@ -31,11 +31,11 @@ select {
 }
 
 .btn-primary {
-  @apply btn bg-moss text-white hover:bg-moss/90;
+  @apply inline-flex items-center justify-center gap-2 rounded-md bg-moss px-4 py-2 text-sm font-medium text-white transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-60;
 }
 
 .btn-secondary {
-  @apply btn border border-oat bg-white text-ink hover:bg-linen;
+  @apply inline-flex items-center justify-center gap-2 rounded-md border border-oat bg-white px-4 py-2 text-sm font-medium text-ink transition hover:bg-linen disabled:cursor-not-allowed disabled:opacity-60;
 }
 
 .page-shell {
