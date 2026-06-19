@@ -6,7 +6,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "dev": "node scripts/next-node22.mjs dev --hostname 0.0.0.0 --port 3002",
+    "dev": "node scripts/next-node22.mjs dev --turbo --disable-source-maps --hostname 0.0.0.0 --port 3002",
     "build": "node scripts/next-node22.mjs build",
     "start": "node scripts/next-node22.mjs start",
     "lint": "node scripts/next-node22.mjs lint",

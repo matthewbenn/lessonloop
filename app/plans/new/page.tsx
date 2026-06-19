@@ -13,7 +13,7 @@ export default async function NewPlanPage({ searchParams }: { searchParams: Prom
   return (
     <>
       <AppHeader />
-      <main className="page-shell max-w-3xl">
+      <main className="page-shell max-w-5xl">
         <Link href={selectedStudent ? `/students/${selectedStudent}` : "/dashboard"} className="text-sm font-medium text-moss hover:underline">
           Back
         </Link>

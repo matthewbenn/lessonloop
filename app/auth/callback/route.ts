@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import { env } from "@/lib/env";
+import { requestOrigin, safeNextPath } from "@/lib/auth-redirect";
 import { createCoachClient } from "@/lib/supabase/server";
-
-const safeNextPath = (next: string | null) => (next?.startsWith("/") && !next.startsWith("//") ? next : "/dashboard");
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const appUrl = env.appUrl();
+  const origin = requestOrigin(request);
   const code = requestUrl.searchParams.get("code");
   const next = safeNextPath(requestUrl.searchParams.get("next"));
 
@@ -15,11 +13,11 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
-      const loginUrl = new URL("/login", appUrl);
+      const loginUrl = new URL("/login", origin);
       loginUrl.searchParams.set("error", error.message);
       return NextResponse.redirect(loginUrl);
     }
   }
 
-  return NextResponse.redirect(new URL(next, appUrl));
+  return NextResponse.redirect(new URL(next, origin));
 }

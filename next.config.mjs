@@ -5,7 +5,10 @@ const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
-  outputFileTracingRoot: projectRoot
+  outputFileTracingRoot: projectRoot,
+  experimental: {
+    optimizePackageImports: ["lucide-react"]
+  }
 };
 
 export default nextConfig;

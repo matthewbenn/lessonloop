@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "mode": "compound-engineering",
+  "source": "https://every.to/guides/compound-engineering",
+  "commands": {
+    "compound on": "Enable compound engineering mode by setting enabled to true.",
+    "compound off": "Disable compound engineering mode by setting enabled to false.",
+    "compound status": "Report whether compound engineering mode is currently enabled or disabled."
+  },
+  "notes": "This file is the source of truth for compound engineering mode. When enabled is false, Codex should use normal lightweight repo instructions and should not require brainstorm, plan, review, polish, or solution-note artifacts."
+}
