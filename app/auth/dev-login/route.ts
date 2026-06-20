@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
+import { requestOrigin, safeNextPath } from "@/lib/auth-redirect";
 import { createAdminClient, createCoachClient } from "@/lib/supabase/server";
-
-const isSafePath = (value: string) => value.startsWith("/") && !value.startsWith("//");
 
 const isAlreadyRegisteredError = (error: { message?: string; code?: string; status?: number }) =>
   error.status === 422 || error.code === "email_exists" || error.message?.toLowerCase().includes("already");
@@ -41,14 +40,20 @@ const ensureDevUser = async (email: string, password: string) => {
   if (updateError) throw updateError;
 };
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   const requestUrl = new URL(request.url);
-  const origin = requestUrl.origin;
-  const nextParam = requestUrl.searchParams.get("next") ?? "/dashboard";
-  const next = isSafePath(nextParam) ? nextParam : "/dashboard";
+  const origin = requestOrigin(request);
+  const next = safeNextPath(requestUrl.searchParams.get("next"));
+
+  const loginRedirect = (message: string) => {
+    const loginUrl = new URL("/login", origin);
+    loginUrl.searchParams.set("next", next);
+    loginUrl.searchParams.set("error", message);
+    return NextResponse.redirect(loginUrl, 303);
+  };
 
   if (!devLoginAllowed(requestUrl)) {
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent("Dev login is disabled.")}`, origin));
+    return loginRedirect("Dev login is disabled.");
   }
 
   const email = process.env.DEV_COACH_EMAIL ?? "dev-coach@lessonloop.local";
@@ -62,9 +67,9 @@ export async function GET(request: Request) {
 
     if (error) throw error;
 
-    return NextResponse.redirect(new URL(next, origin));
+    return NextResponse.redirect(new URL(next, origin), 303);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to complete dev login.";
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, origin));
+    return loginRedirect(message);
   }
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { requestOrigin, safeNextPath } from "@/lib/auth-redirect";
+import { cookies } from "next/headers";
+import { authNextCookie, requestOrigin, safeNextPath } from "@/lib/auth-redirect";
 import { createCoachClient } from "@/lib/supabase/server";
 
 const isProvider = (provider: string): provider is "google" | "apple" => provider === "google" || provider === "apple";
@@ -15,8 +16,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ prov
   }
 
   const supabase = await createCoachClient();
+  const cookieStore = await cookies();
   const callbackUrl = new URL("/auth/callback", origin);
-  callbackUrl.searchParams.set("next", next);
+  cookieStore.set(authNextCookie.name, next, authNextCookie.options);
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,

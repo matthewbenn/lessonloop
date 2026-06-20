@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Apple, Chrome, FlaskConical } from "lucide-react";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
@@ -15,19 +14,21 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <p className="mt-2 text-sm text-ink/70">Manage students, plans, and secure student share links.</p>
         </div>
         <div className="grid gap-3">
-          <Link className="btn-primary w-full" href={`/auth/sign-in/google?next=${encodedNext}`}>
+          <a className="btn-primary w-full" href={`/auth/sign-in/google?next=${encodedNext}`}>
             <Chrome className="h-4 w-4" />
             Sign in with Google
-          </Link>
-          <Link className="btn-secondary w-full" href={`/auth/sign-in/apple?next=${encodedNext}`}>
+          </a>
+          <a className="btn-secondary w-full" href={`/auth/sign-in/apple?next=${encodedNext}`}>
             <Apple className="h-4 w-4" />
             Sign in with Apple
-          </Link>
+          </a>
           {showDevLogin ? (
-            <Link className="btn-secondary w-full border-dashed" href={`/auth/dev-login?next=${encodedNext}`}>
-              <FlaskConical className="h-4 w-4" />
-              Dev login
-            </Link>
+            <form action={`/auth/dev-login?next=${encodedNext}`} method="post">
+              <button className="btn-secondary w-full border-dashed" type="submit">
+                <FlaskConical className="h-4 w-4" />
+                Dev login
+              </button>
+            </form>
           ) : null}
           {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
         </div>
